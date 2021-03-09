@@ -36,5 +36,10 @@ export default {
     return apiHelper.get('/users/top', {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  getTopRestaurants () {
+    return apiHelper.get('/restaurants/top', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
