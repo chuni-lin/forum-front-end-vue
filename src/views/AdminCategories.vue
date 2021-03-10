@@ -196,8 +196,22 @@ export default {
         return category
       })
     },
-    updateCategory ({ categoryId, name }) {
-      this.toggleIsEditing(categoryId)
+    async updateCategory ({ categoryId, name }) {
+      try {
+        const { data } = await adminAPI.categories.update({
+          categoryId,
+          name
+        })
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
+        this.toggleIsEditing(categoryId)
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法更新餐廳類別，請稍後再試'
+        })
+      }
     },
     handleCancel (categoryId) {
       this.categories = this.categories.map(category => {
