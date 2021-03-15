@@ -19,7 +19,7 @@ export default new Vuex.Store({
     setCurrentUser (state, currentUser) {
       state.currentUser = {
         ...state.currentUser,
-        currentUser
+        ...currentUser
       }
       state.isAuthenticated = true
     }
