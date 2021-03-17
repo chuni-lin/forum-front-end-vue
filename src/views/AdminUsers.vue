@@ -3,49 +3,52 @@
     <!-- AdminNav Component -->
     <AdminNav />
 
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">
-            #
-          </th>
-          <th scope="col">
-            Email
-          </th>
-          <th scope="col">
-            Role
-          </th>
-          <th
-            scope="col"
-            width="140"
-          >
-            Action
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="user in users"
-          :key="user.id"
-        >
-          <th scope="row">
-            {{ user.id }}
-          </th>
-          <td>{{ user.email }}</td>
-          <td>{{ user.isAdmin ? 'Admin' : 'User' }}</td>
-          <td>
-            <button
-              v-if="user.id !== currentUser.id"
-              type="button"
-              class="btn btn-link"
-              @click.stop.prevent="toggleUserRole({ userId: user.id, isAdmin: user.isAdmin })"
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">
+              #
+            </th>
+            <th scope="col">
+              Email
+            </th>
+            <th scope="col">
+              Role
+            </th>
+            <th
+              scope="col"
+              width="140"
             >
-              set as {{ user.isAdmin ? 'User' : 'Admin' }}
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="user in users"
+            :key="user.id"
+          >
+            <th scope="row">
+              {{ user.id }}
+            </th>
+            <td>{{ user.email }}</td>
+            <td>{{ user.isAdmin ? 'Admin' : 'User' }}</td>
+            <td>
+              <button
+                v-if="user.id !== currentUser.id"
+                type="button"
+                class="btn btn-link"
+                @click.stop.prevent="toggleUserRole({ userId: user.id, isAdmin: user.isAdmin })"
+              >
+                set as {{ user.isAdmin ? 'User' : 'Admin' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
   </div>
 </template>
 
@@ -54,10 +57,12 @@ import { mapState } from 'vuex'
 import AdminNav from './../components/AdminNav'
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helpers'
+import Spinner from './../components/Spinner'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data () {
     return {

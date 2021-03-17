@@ -2,28 +2,31 @@
   <main role="main">
     <div class="album py-5 bg-light">
       <div class="container">
-        <!-- user profile -->
-        <UserProfileCard
-          :user="user"
-          :is-current-user="currentUser.id === user.id"
-          :initial-is-followed="isFollowed"
-        />
-        <div class="row">
-          <div class="col-md-4">
-            <!-- user followings card -->
-            <UserFollowingsCard :followings="followings" />
-            <br>
-            <!-- user followers card -->
-            <UserFollowersCard :followers="followers" />
+        <Spinner v-if="isLoading" />
+        <template v-else>
+          <!-- user profile -->
+          <UserProfileCard
+            :user="user"
+            :is-current-user="currentUser.id === user.id"
+            :initial-is-followed="isFollowed"
+          />
+          <div class="row">
+            <div class="col-md-4">
+              <!-- user followings card -->
+              <UserFollowingsCard :followings="followings" />
+              <br>
+              <!-- user followers card -->
+              <UserFollowersCard :followers="followers" />
+            </div>
+            <div class="col-md-8">
+              <!-- user comments card -->
+              <UserCommentsCard :comments="comments" />
+              <br>
+              <!-- user favorite restaurant card -->
+              <UserFavoritedRestaurantsCard :favorited-restaurants="favoritedRestaurants" />
+            </div>
           </div>
-          <div class="col-md-8">
-            <!-- user comments card -->
-            <UserCommentsCard :comments="comments" />
-            <br>
-            <!-- user favorite restaurant card -->
-            <UserFavoritedRestaurantsCard :favorited-restaurants="favoritedRestaurants" />
-          </div>
-        </div>
+        </template>
       </div>
     </div>
   </main>
@@ -38,6 +41,7 @@ import UserFavoritedRestaurantsCard from '../components/UserFavoritedRestaurants
 import usersAPI from './../apis/users'
 import { Toast } from './../utils/helpers'
 import { mapState } from 'vuex'
+import Spinner from './../components/Spinner'
 
 export default {
   components: {
@@ -45,7 +49,8 @@ export default {
     UserFollowingsCard,
     UserFollowersCard,
     UserCommentsCard,
-    UserFavoritedRestaurantsCard
+    UserFavoritedRestaurantsCard,
+    Spinner
   },
   data () {
     return {
@@ -63,7 +68,8 @@ export default {
       favoritedRestaurants: [],
       followers: [],
       followings: [],
-      isFollowed: false
+      isFollowed: false,
+      isLoading: true
     }
   },
   computed: {
@@ -81,6 +87,7 @@ export default {
   methods: {
     async fetchUser (userId) {
       try {
+        this.isLoading = true
         const { data } = await usersAPI.get({ userId })
         if (data.status === 'error') {
           throw new Error(data.message)
@@ -118,7 +125,10 @@ export default {
         this.followings = Followings
         this.followers = Followers
         this.favoritedRestaurants = FavoritedRestaurants
+
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           type: 'error',
           title: '無法取得使用者資料，請稍後再試'
